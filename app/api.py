@@ -1,6 +1,6 @@
 from fastapi import FastAPI, status
 import psycopg2
-import var_env
+import db_utils
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -21,11 +21,7 @@ async def get_users():
     query = ("select user_id,"
              "username "
              "from users_table")
-    # Open connection
-    conn = psycopg2.connect(
-        f"host={var_env.HOST} dbname={var_env.DATABASE} user={var_env.USER} "
-        f"password={var_env.PASSWORD} port={var_env.PORT}")
-    # Open a cursor to send SQL commands
+    conn = db_utils.connect()
     cur = conn.cursor()
     cur.execute(query)
     raw = cur.fetchall()
@@ -41,9 +37,7 @@ async def get_user_by_id(id):
              f"from users_table "
              f"Where user_id = {id}")
     # Open connection
-    conn = psycopg2.connect(
-        f"host={var_env.HOST} dbname={var_env.DATABASE} user={var_env.USER} "
-        f"password={var_env.PASSWORD} port={var_env.PORT}")
+    conn = db_utils.connect()
     # Open a cursor to send SQL commands
     cur = conn.cursor()
     cur.execute(query)
@@ -59,9 +53,7 @@ async def get_username_by_id(user_id):
              f"from users_table "
              f"Where user_id = {user_id}")
     # Open connection
-    conn = psycopg2.connect(
-        f"host={var_env.HOST} dbname={var_env.DATABASE} user={var_env.USER} "
-        f"password={var_env.PASSWORD} port={var_env.PORT}")
+    conn = db_utils.connect()
     # Open a cursor to send SQL commands
     cur = conn.cursor()
     cur.execute(query)
@@ -71,13 +63,11 @@ async def get_username_by_id(user_id):
     return raw
 
 
-@app.post("/user/{user_id}/{name}", status_code=status.HTTP_201_CREATED)
-async def post_user(user_id, name):
-    query2 = f"INSERT INTO users_table (user_id, username) VALUES ('{user_id}','{name}');"
+@app.post("/users/{user_id}/{name}", status_code=status.HTTP_201_CREATED)
+async def create_user(user_id, name):
+    query2 = ("INSERT INTO users_table (user_id, username) VALUES (%d,%s)",(user_id, name))
     # Open connection
-    conn = psycopg2.connect(
-        f"host=%{var_env.HOST} dbname={var_env.DATABASE} user={var_env.USER} "
-        f"password={var_env.PASSWORD} port={var_env.PORT}", autocommit=True)
+    conn = db_utils.connect()
     # Open a cursor to send SQL commands
     cur = conn.cursor()
     cur.execute(query2)
@@ -86,4 +76,4 @@ async def post_user(user_id, name):
     # raw = cur.fetchall()
     # Close connection
     conn.close()
-    return "1"
+    return {"1"}

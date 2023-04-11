@@ -1,5 +1,0 @@
-HOST = "localhost"
-USER = "postgres"
-PASSWORD = "admin"
-DATABASE = "project_dofus"
-PORT = "5432"
