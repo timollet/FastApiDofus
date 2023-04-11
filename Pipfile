@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+uvicorn = "*"
+python-dotenv = "*"
+pydantic = {extras = ["email"], version = "*"}
+psycopg = {extras = ["binary", "pool"], version = "*"}
+
+[dev-packages]
+pydeps = "*"
+
+[requires]
+python_version = "3.11"
