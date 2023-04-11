@@ -59,13 +59,12 @@ async def get_username_by_id(user_id):
 
 @app.post("/users", status_code=status.HTTP_201_CREATED)
 async def create_user(name):
-    query2 = ("INSERT INTO users (name) VALUES (%s)", (name,))
+    query2 = "INSERT INTO users (name) VALUES (%s)", (name,)
     # Open connection
     conn = db_utils.connect()
     # Open a cursor to send SQL commands
-    cur = conn.cursor()
-    cur.execute(query2)
-    cur.close()
+    cur = conn.execute("INSERT INTO users (name) VALUES (%s)",
+                       (name,))
     conn.commit()
     # raw = cur.fetchall()
     # Close connection
